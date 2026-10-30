@@ -38,7 +38,7 @@ jobs:
           - os: macos-latest
             target: macos-arm64
             spec: SWC2STLApp.spec
-          - os: macos-13
+          - os: macos-15-intel
             target: macos-x64
             spec: SWC2STLApp.spec
     steps:
