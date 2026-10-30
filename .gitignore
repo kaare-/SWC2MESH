@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+*.spec.bak
+
+# Virtual environments
+.venv/
+.test-venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Outputs
+Output/
+Processed_*/
+*.stl
+!examples/**/*.stl
+
+# PyInstaller
+*.manifest
+
+# Logs
+*.log
+processing_log.txt
+
+# Test artifacts
+.pytest_cache/
+htmlcov/
+.coverage

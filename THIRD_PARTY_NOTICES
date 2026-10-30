@@ -1,0 +1,31 @@
+SWC2MESH bundles or depends on the following third-party software.
+This file summarizes typical licenses; see each package for full text.
+
+VTK (Visualization Toolkit) 9.3
+  License: BSD 3-Clause License
+  https://vtk.org/licensing/
+  Binary releases (PyInstaller) include VTK shared libraries.
+
+PyQt5 5.15
+  License: GNU General Public License v3 (GPL-3.0), or commercial Qt license
+  https://www.riverbankcomputing.com/software/pyqt/
+  Distributing a frozen application that includes PyQt5 may trigger GPL
+  obligations unless you use a commercial Qt license. Source distribution
+  of this project (pip install + run from source) follows each dependency's
+  usual linking model.
+
+Qt 5 (via PyQt5)
+  License: GNU Lesser General Public License v3 (LGPL-3.0), or commercial
+  https://www.qt.io/licensing/
+
+NumPy (transitive dependency of VTK)
+  License: BSD 3-Clause License
+  https://numpy.org/doc/stable/license.html
+
+Python
+  License: Python Software Foundation License
+  https://docs.python.org/3/license.html
+
+PyInstaller (build tooling only; not required to run from source)
+  License: GPL-2.0 with bootloader exception
+  https://pyinstaller.org/en/stable/license.html

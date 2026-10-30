@@ -1,0 +1,25 @@
+[project]
+name = "swc2mesh"
+version = "0.1.0"
+description = "Convert SWC neuron morphology files to watertight STL meshes (GUI + batch processing)."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9,<3.13"
+dependencies = [
+  "vtk>=9.3.0,<9.4.0",
+  "PyQt5>=5.15.0,<6",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+  "pyinstaller>=6.10",
+]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

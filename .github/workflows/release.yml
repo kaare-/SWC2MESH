@@ -1,0 +1,104 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: pre-release tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest
+      - run: pytest -q tests/test_smoke.py
+
+  build:
+    name: build (${{ matrix.target }})
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux
+            spec: SWC2STL.spec
+          - os: windows-latest
+            target: windows
+            spec: SWC2STL.spec
+          - os: macos-latest
+            target: macos-arm64
+            spec: SWC2STLApp.spec
+          - os: macos-13
+            target: macos-x64
+            spec: SWC2STLApp.spec
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install build deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+
+      - name: PyInstaller
+        run: pyinstaller --noconfirm "${{ matrix.spec }}"
+
+      - name: Archive (Linux)
+        if: matrix.target == 'linux'
+        run: |
+          cd dist
+          tar -czvf "../SWC2MESH-${{ matrix.target }}-${{ github.ref_name }}.tar.gz" SWC2STL
+
+      - name: Archive (Windows)
+        if: matrix.target == 'windows'
+        shell: pwsh
+        run: |
+          Compress-Archive -Path dist/SWC2STL -DestinationPath "SWC2MESH-${{ matrix.target }}-${{ github.ref_name }}.zip"
+
+      - name: Archive (macOS app)
+        if: startsWith(matrix.target, 'macos')
+        run: |
+          cd dist
+          zip -ry "../SWC2MESH-${{ matrix.target }}-${{ github.ref_name }}.zip" SWC2STLApp.app || \
+          zip -ry "../SWC2MESH-${{ matrix.target }}-${{ github.ref_name }}.zip" SWC2STLApp
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SWC2MESH-${{ matrix.target }}-${{ github.ref_name }}
+          path: |
+            SWC2MESH-*.tar.gz
+            SWC2MESH-*.zip
+
+  publish:
+    name: GitHub Release assets
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
